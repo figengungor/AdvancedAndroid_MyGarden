@@ -56,7 +56,7 @@ public class AddPlantActivity extends AppCompatActivity {
         // water time to now
         // Extract the plant type from the tag
         ImageView imgView = (ImageView) view.findViewById(R.id.plant_type_image);
-        int plantType = (int) imgView.getTag();
+        int plantType = (int) imgView.getTag(); //sets the tag to position in adapter
         long timeNow = System.currentTimeMillis();
         // Insert the new plant into DB
         ContentValues contentValues = new ContentValues();
