@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:initialKeyguardLayout="@layout/plant_widget_provider"
+    android:initialLayout="@layout/plant_widget_provider"
+    android:minHeight="40dp"
+    android:minWidth="40dp"
+    android:previewImage="@drawable/example_appwidget_preview"
+    android:resizeMode="horizontal|vertical"
+    android:updatePeriodMillis="86400000"
+    android:widgetCategory="home_screen"/>
+
+
+<!--App Widget can be displayed on the home screen ( home_screen ), the lock screen ( keyguard ),
+ or both.-->
+
+<!--The widgetCategory attribute declares whether your App Widget can be displayed on
+the home screen (home_screen), the lock screen (keyguard), or both. Only Android versions lower
+than 5.0 support lock-screen widgets. For Android 5.0 and higher, only home_screen is valid.-->
