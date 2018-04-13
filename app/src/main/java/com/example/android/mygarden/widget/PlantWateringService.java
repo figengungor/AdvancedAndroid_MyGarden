@@ -38,9 +38,10 @@ public class PlantWateringService extends IntentService {
 
     public static final String EXTRA_PLANT_ID = "plant_id";
 
-    public static void startActionWaterPlants(Context context) {
+    public static void startActionWaterPlant(Context context, long plantId) {
         Intent intent = new Intent(context, PlantWateringService.class);
-        intent.setAction(ACTION_WATER_PLANTS);
+        intent.setAction(ACTION_WATER_PLANT);
+        intent.putExtra(EXTRA_PLANT_ID, plantId);
         context.startService(intent);
     }
 
