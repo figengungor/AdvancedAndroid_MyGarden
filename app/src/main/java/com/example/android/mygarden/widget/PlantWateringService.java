@@ -134,5 +134,7 @@ public class PlantWateringService extends IntentService {
                 PlantContract.PlantEntry.COLUMN_LAST_WATERED_TIME + ">?",
                 new String[]{String.valueOf(timeNow - PlantUtils.MAX_AGE_WITHOUT_WATER)}
         );
+        //Always update widgets after watering plants
+        startActionUpdatePlantWidgets(this);
     }
 }
