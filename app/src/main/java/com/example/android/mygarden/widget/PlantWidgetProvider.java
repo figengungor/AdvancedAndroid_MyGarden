@@ -35,6 +35,8 @@ public class PlantWidgetProvider extends AppWidgetProvider {
         //Hide water drop image if doesn't need water(less than MIN_AGE_BETWEEN_WATER)
         if (!needWater)
             views.setViewVisibility(R.id.widget_water_button, View.INVISIBLE);
+        else
+            views.setViewVisibility(R.id.widget_water_button, View.VISIBLE);
 
         //Set plant Id text
         views.setTextViewText(R.id.widget_plant_id_text_view, String.valueOf(plantId));
