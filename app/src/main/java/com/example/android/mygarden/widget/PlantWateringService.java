@@ -27,9 +27,6 @@ import static com.example.android.mygarden.utils.PlantUtils.MIN_AGE_BETWEEN_WATE
 
 public class PlantWateringService extends IntentService {
 
-    public static final String ACTION_WATER_PLANTS =
-            "com.example.android.mygarden.action.water_plants";
-
     public static final String ACTION_WATER_PLANT =
             "com.example.android.mygarden.action.water_plant";
 
@@ -105,21 +102,6 @@ public class PlantWateringService extends IntentService {
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, PlantWidgetProvider.class));
         //Now update all widgets
         PlantWidgetProvider.updatePlantWidgets(this, appWidgetManager, imgRes, plantId, needWater, appWidgetIds);
-    }
-
-    //Updates last_watered timestamp for all plants still alive
-    private void handleActionWaterPlants() {
-        Uri PLANTS_URI = BASE_CONTENT_URI.buildUpon().appendEncodedPath(PATH_PLANTS).build();
-        ContentValues contentValues = new ContentValues();
-        long timeNow = System.currentTimeMillis();
-        contentValues.put(PlantContract.PlantEntry.COLUMN_LAST_WATERED_TIME, timeNow);
-        //Update only plants that are still alive
-        getContentResolver().update(
-                PLANTS_URI,
-                contentValues,
-                PlantContract.PlantEntry.COLUMN_LAST_WATERED_TIME + ">?",
-                new String[]{String.valueOf(timeNow - PlantUtils.MAX_AGE_WITHOUT_WATER)}
-        );
     }
 
     //Updates given plant
