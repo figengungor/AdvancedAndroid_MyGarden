@@ -1,10 +1,13 @@
 package com.example.android.mygarden.widget;
 
+import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -23,9 +26,23 @@ import static com.example.android.mygarden.ui.PlantDetailActivity.EXTRA_PLANT_ID
  */
 public class PlantWidgetProvider extends AppWidgetProvider {
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int imgRes, long plantId,
                                 boolean needWater, int appWidgetId) {
+        //Get current width to decide on single plant vs garden grid view
+        Bundle options = appWidgetManager.getAppWidgetOptions(appWidgetId);
+        int width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
+        RemoteViews rv;
+        if (width < 300) {
+            rv = getSinglePlantRemoteView(context, imgRes, plantId, needWater);
+        } else {
+            rv = getGardenGridRemoteView(context);
+        }
+        // Instruct the widget manager to update the widget
+        appWidgetManager.updateAppWidget(appWidgetId, rv);
+    }
 
+    private static RemoteViews getSinglePlantRemoteView(Context context, int imgRes, long plantId, boolean needWater) {
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.plant_widget);
 
@@ -69,9 +86,11 @@ public class PlantWidgetProvider extends AppWidgetProvider {
                 wateringIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         views.setOnClickPendingIntent(R.id.widget_water_button, wateringPendingIntent);
+        return views;
+    }
 
-        // Instruct the widget manager to update the widget
-        appWidgetManager.updateAppWidget(appWidgetId, views);
+    private static RemoteViews getGardenGridRemoteView(Context context) {
+        return null;
     }
 
     /*onUpdate is called once a new widget is created
@@ -84,6 +103,13 @@ public class PlantWidgetProvider extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         //Start the Intent service update widget action, the service takes care of updating the widgets UI
         PlantWateringService.startActionUpdatePlantWidgets(context);
+    }
+
+    //is called any time app widget options changed(in case of resizing for example)
+    @Override
+    public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
+        PlantWateringService.startActionUpdatePlantWidgets(context);
+        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
     }
 
     @Override
