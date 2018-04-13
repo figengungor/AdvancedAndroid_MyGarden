@@ -18,6 +18,7 @@ import com.example.android.mygarden.utils.PlantUtils;
 import static com.example.android.mygarden.provider.PlantContract.BASE_CONTENT_URI;
 import static com.example.android.mygarden.provider.PlantContract.INVALID_PLANT_ID;
 import static com.example.android.mygarden.provider.PlantContract.PATH_PLANTS;
+import static com.example.android.mygarden.utils.PlantUtils.MAX_AGE_WITHOUT_WATER;
 import static com.example.android.mygarden.utils.PlantUtils.MIN_AGE_BETWEEN_WATER;
 
 /**
@@ -92,7 +93,8 @@ public class PlantWateringService extends IntentService {
             long createdAt = cursor.getLong(createTimeIndex);
             int plantType = cursor.getInt(plantTypeIndex);
             plantId = cursor.getLong(idIndex);
-            if (timeNow - wateredAt < MIN_AGE_BETWEEN_WATER)
+            if (timeNow - wateredAt < MIN_AGE_BETWEEN_WATER &&
+                    timeNow-wateredAt > MAX_AGE_WITHOUT_WATER)
                 needWater = false;
             cursor.close();
             imgRes = PlantUtils.getPlantImageRes(this, timeNow - createdAt, timeNow - wateredAt, plantType);
