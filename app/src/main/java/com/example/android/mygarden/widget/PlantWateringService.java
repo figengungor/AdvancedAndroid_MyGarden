@@ -91,7 +91,7 @@ public class PlantWateringService extends IntentService {
             long createdAt = cursor.getLong(createTimeIndex);
             int plantType = cursor.getInt(plantTypeIndex);
             plantId = cursor.getLong(idIndex);
-            if (timeNow - wateredAt < MIN_AGE_BETWEEN_WATER &&
+            if (timeNow - wateredAt < MIN_AGE_BETWEEN_WATER ||
                     timeNow-wateredAt > MAX_AGE_WITHOUT_WATER)
                 needWater = false;
             cursor.close();
