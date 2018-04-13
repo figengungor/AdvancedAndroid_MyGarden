@@ -18,7 +18,7 @@ import com.example.android.mygarden.ui.MainActivity;
  */
 public class PlantWidgetProvider extends AppWidgetProvider {
 
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int imgRes,
+    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int imgRes, long plantId,
                                 int appWidgetId) {
 
         // Construct the RemoteViews object
@@ -39,7 +39,8 @@ public class PlantWidgetProvider extends AppWidgetProvider {
 
         // Add the wateringservice click handler
         Intent wateringIntent = new Intent(context, PlantWateringService.class);
-        wateringIntent.setAction(PlantWateringService.ACTION_WATER_PLANTS);
+        wateringIntent.setAction(PlantWateringService.ACTION_WATER_PLANT);
+        wateringIntent.putExtra(PlantWateringService.EXTRA_PLANT_ID, plantId);
         PendingIntent wateringPendingIntent = PendingIntent.getService(
                 context,
                 0,
@@ -73,9 +74,9 @@ public class PlantWidgetProvider extends AppWidgetProvider {
         // Enter relevant functionality for when the last widget is disabled
     }
 
-    public static void updatePlantWidgets(Context context, AppWidgetManager appWidgetManager, int imgRes, int[] appWidgetIds) {
+    public static void updatePlantWidgets(Context context, AppWidgetManager appWidgetManager, int imgRes, long plantId, int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, imgRes, appWidgetId);
+            updateAppWidget(context, appWidgetManager, imgRes, plantId,  appWidgetId);
         }
     }
 }
