@@ -3,6 +3,7 @@ package com.example.android.mygarden.widget;
 import android.app.IntentService;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -120,16 +121,18 @@ public class PlantWateringService extends IntentService {
 
     //Updates given plant
     private void handleActionWaterPlant(long plantId) {
-        Uri PLANTS_URI = BASE_CONTENT_URI.buildUpon().appendEncodedPath(PATH_PLANTS).build();
+        Uri SINGLE_PLANT_URI = ContentUris.withAppendedId(
+                BASE_CONTENT_URI.buildUpon().appendEncodedPath(PATH_PLANTS).build(),
+                plantId);
         ContentValues contentValues = new ContentValues();
         long timeNow = System.currentTimeMillis();
         contentValues.put(PlantContract.PlantEntry.COLUMN_LAST_WATERED_TIME, timeNow);
-        //Update only plants that are still alive
+        //Update only if that plant is still alive
         getContentResolver().update(
-                PLANTS_URI,
+                SINGLE_PLANT_URI,
                 contentValues,
-                PlantContract.PlantEntry._ID + "=?",
-                new String[]{String.valueOf(plantId)}
+                PlantContract.PlantEntry.COLUMN_LAST_WATERED_TIME + ">?",
+                new String[]{String.valueOf(timeNow - PlantUtils.MAX_AGE_WITHOUT_WATER)}
         );
     }
 }
