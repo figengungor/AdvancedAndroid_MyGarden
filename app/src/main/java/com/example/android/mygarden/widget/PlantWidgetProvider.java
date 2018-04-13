@@ -10,6 +10,10 @@ import android.widget.RemoteViews;
 
 import com.example.android.mygarden.R;
 import com.example.android.mygarden.ui.MainActivity;
+import com.example.android.mygarden.ui.PlantDetailActivity;
+
+import static com.example.android.mygarden.provider.PlantContract.INVALID_PLANT_ID;
+import static com.example.android.mygarden.ui.PlantDetailActivity.EXTRA_PLANT_ID;
 
 //https://developer.android.com/guide/topics/appwidgets/index.html
 //https://developer.android.com/reference/android/widget/RemoteViews.html
@@ -34,8 +38,16 @@ public class PlantWidgetProvider extends AppWidgetProvider {
 
         //PendingIntent is just a wrap around an intent that allows other applications to have
         // access and run that intent in your application
-        //Create an Intent to launch MainActivity when clicked
-        Intent intent = new Intent(context, MainActivity.class);
+        //Create an Intent to launch MainActivity if plantId is INVALID_PLANT_ID
+        // Else create an Intent to launch PlantDetailActivity with plantId EXTRA
+        Intent intent;
+        if (plantId == INVALID_PLANT_ID) {
+            intent = new Intent(context, MainActivity.class);
+        } else {
+            intent = new Intent(context, PlantDetailActivity.class);
+            intent.putExtra(EXTRA_PLANT_ID, plantId);
+        }
+
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
         //Widgets allow click handlers to only launch pending intents
