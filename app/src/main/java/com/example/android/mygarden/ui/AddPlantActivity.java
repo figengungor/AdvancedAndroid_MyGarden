@@ -26,6 +26,7 @@ import android.widget.ImageView;
 
 import com.example.android.mygarden.R;
 import com.example.android.mygarden.provider.PlantContract;
+import com.example.android.mygarden.widget.PlantWateringService;
 
 public class AddPlantActivity extends AppCompatActivity {
     private RecyclerView mTypesRecyclerView;
@@ -64,6 +65,8 @@ public class AddPlantActivity extends AppCompatActivity {
         contentValues.put(PlantContract.PlantEntry.COLUMN_CREATION_TIME, timeNow);
         contentValues.put(PlantContract.PlantEntry.COLUMN_LAST_WATERED_TIME, timeNow);
         getContentResolver().insert(PlantContract.PlantEntry.CONTENT_URI, contentValues);
+        //So we need to update widget when database changes. Doesn't make sense now.
+        PlantWateringService.startActionUpdatePlantWidgets(this);
         // Close this activity
         finish();
     }

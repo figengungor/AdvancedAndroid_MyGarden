@@ -32,6 +32,7 @@ import android.widget.TextView;
 import com.example.android.mygarden.R;
 import com.example.android.mygarden.provider.PlantContract;
 import com.example.android.mygarden.utils.PlantUtils;
+import com.example.android.mygarden.widget.PlantWateringService;
 
 import static com.example.android.mygarden.provider.PlantContract.BASE_CONTENT_URI;
 import static com.example.android.mygarden.provider.PlantContract.PATH_PLANTS;
@@ -125,6 +126,8 @@ public class PlantDetailActivity extends AppCompatActivity
         Uri SINGLE_PLANT_URI = ContentUris.withAppendedId(
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_PLANTS).build(), mPlantId);
         getContentResolver().delete(SINGLE_PLANT_URI, null, null);
+        //That makes sense. Because if user deletes all plants. Then grass it is!
+        PlantWateringService.startActionUpdatePlantWidgets(this);
         finish();
     }
 }
