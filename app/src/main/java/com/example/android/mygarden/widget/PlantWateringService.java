@@ -17,6 +17,7 @@ import com.example.android.mygarden.utils.PlantUtils;
 import static com.example.android.mygarden.provider.PlantContract.BASE_CONTENT_URI;
 import static com.example.android.mygarden.provider.PlantContract.INVALID_PLANT_ID;
 import static com.example.android.mygarden.provider.PlantContract.PATH_PLANTS;
+import static com.example.android.mygarden.utils.PlantUtils.MIN_AGE_BETWEEN_WATER;
 
 /**
  * Created by figengungor on 4/13/2018.
@@ -78,6 +79,7 @@ public class PlantWateringService extends IntentService {
         //Extract plant details
         int imgRes = R.drawable.grass;
         long plantId = INVALID_PLANT_ID;
+        boolean needWater = true;
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
             int idIndex = cursor.getColumnIndex(PlantContract.PlantEntry._ID);
@@ -89,6 +91,8 @@ public class PlantWateringService extends IntentService {
             long createdAt = cursor.getLong(createTimeIndex);
             int plantType = cursor.getInt(plantTypeIndex);
             plantId = cursor.getLong(idIndex);
+            if (timeNow - wateredAt < MIN_AGE_BETWEEN_WATER)
+                needWater = false;
             cursor.close();
             imgRes = PlantUtils.getPlantImageRes(this, timeNow - createdAt, timeNow - wateredAt, plantType);
         }
@@ -96,7 +100,7 @@ public class PlantWateringService extends IntentService {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, PlantWidgetProvider.class));
         //Now update all widgets
-        PlantWidgetProvider.updatePlantWidgets(this, appWidgetManager, imgRes, plantId, appWidgetIds);
+        PlantWidgetProvider.updatePlantWidgets(this, appWidgetManager, imgRes, plantId, needWater, appWidgetIds);
     }
 
     //Updates last_watered timestamp for all plants still alive

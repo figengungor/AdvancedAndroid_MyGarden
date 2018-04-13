@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import com.example.android.mygarden.R;
@@ -19,13 +20,17 @@ import com.example.android.mygarden.ui.MainActivity;
 public class PlantWidgetProvider extends AppWidgetProvider {
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int imgRes, long plantId,
-                                int appWidgetId) {
+                                boolean needWater, int appWidgetId) {
 
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.plant_widget);
 
         //Update image
         views.setImageViewResource(R.id.widget_plant_image, imgRes);
+
+        //Hide water drop image if doesn't need water(less than MIN_AGE_BETWEEN_WATER)
+        if (!needWater)
+            views.setViewVisibility(R.id.widget_water_button, View.INVISIBLE);
 
         //PendingIntent is just a wrap around an intent that allows other applications to have
         // access and run that intent in your application
@@ -74,9 +79,9 @@ public class PlantWidgetProvider extends AppWidgetProvider {
         // Enter relevant functionality for when the last widget is disabled
     }
 
-    public static void updatePlantWidgets(Context context, AppWidgetManager appWidgetManager, int imgRes, long plantId, int[] appWidgetIds) {
+    public static void updatePlantWidgets(Context context, AppWidgetManager appWidgetManager, int imgRes, long plantId, boolean needWater, int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, imgRes, plantId,  appWidgetId);
+            updateAppWidget(context, appWidgetManager, imgRes, plantId, needWater, appWidgetId);
         }
     }
 }
