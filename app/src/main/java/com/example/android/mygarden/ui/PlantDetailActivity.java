@@ -74,6 +74,8 @@ public class PlantDetailActivity extends AppCompatActivity
         contentValues.put(PlantContract.PlantEntry.COLUMN_LAST_WATERED_TIME, timeNow);
         getContentResolver().update(SINGLE_PLANT_URI, contentValues, null, null);
         cursor.close();
+        //Update widgets
+        PlantWateringService.startActionUpdatePlantWidgets(this);
     }
 
     @Override
