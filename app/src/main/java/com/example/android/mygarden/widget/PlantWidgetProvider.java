@@ -36,6 +36,9 @@ public class PlantWidgetProvider extends AppWidgetProvider {
         if (!needWater)
             views.setViewVisibility(R.id.widget_water_button, View.INVISIBLE);
 
+        //Set plant Id text
+        views.setTextViewText(R.id.widget_plant_id_text_view, String.valueOf(plantId));
+
         //PendingIntent is just a wrap around an intent that allows other applications to have
         // access and run that intent in your application
         //Create an Intent to launch MainActivity if plantId is INVALID_PLANT_ID
