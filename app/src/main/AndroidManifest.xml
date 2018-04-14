@@ -38,7 +38,11 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/plant_widget_info" />
         </receiver>
+
         <service android:name=".widget.PlantWateringService" />
+        <service
+            android:name=".widget.GridWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
 </manifest>

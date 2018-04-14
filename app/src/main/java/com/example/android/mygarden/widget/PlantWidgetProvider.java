@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -66,11 +67,12 @@ public class PlantWidgetProvider extends AppWidgetProvider {
         if (plantId == INVALID_PLANT_ID) {
             intent = new Intent(context, MainActivity.class);
         } else {
+            Log.d(PlantWidgetProvider.class.getSimpleName(), "plantId=" + plantId);
             intent = new Intent(context, PlantDetailActivity.class);
             intent.putExtra(EXTRA_PLANT_ID, plantId);
         }
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         //Widgets allow click handlers to only launch pending intents
         views.setOnClickPendingIntent(R.id.widget_plant_image, pendingIntent);
@@ -90,7 +92,27 @@ public class PlantWidgetProvider extends AppWidgetProvider {
     }
 
     private static RemoteViews getGardenGridRemoteView(Context context) {
-        return null;
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_grid_view);
+        //Set the GridWidgetService intent to act as the adapter for the GridView
+        Intent intent = new Intent(context, GridWidgetService.class);
+        views.setRemoteAdapter(R.id.widget_grid_view, intent);
+
+        //Set the PlantDetailActivity intent to launch when clicked
+        Intent appIntent = new Intent(context, PlantDetailActivity.class);
+        PendingIntent appPendingIntent = PendingIntent.getActivity(context,
+                0,
+                appIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        views.setPendingIntentTemplate(R.id.widget_grid_view, appPendingIntent);
+
+        //Handle empty gardens
+        //this will simply let the adapter know to display this layout instead of GridView
+        //in case the garden is empty
+        views.setEmptyView(R.id.widget_grid_view, R.id.empty_view);
+
+        return views;
+
     }
 
     /*onUpdate is called once a new widget is created
@@ -105,6 +127,7 @@ public class PlantWidgetProvider extends AppWidgetProvider {
         PlantWateringService.startActionUpdatePlantWidgets(context);
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     //is called any time app widget options changed(in case of resizing for example)
     @Override
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
